@@ -47,6 +47,11 @@ y_test[0:12500] = 1
 
 vocab_size += 1
 
+'''
+Hidden units is 500 and vocab size of 8001 as we start from 0
+Overfitting can be achieved by increasing hidden units,
+removing dropout, adding a second or third layer in BOW_model.py
+'''
 model = BOW_model(vocab_size,500)
 model.cuda()
 
