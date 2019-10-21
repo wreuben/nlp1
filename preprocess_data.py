@@ -32,9 +32,9 @@ for filename in filenames:
     line = nltk.word_tokenize(line)
     line = [w.lower() for w in line]
 
-x_train.append(line)
-count += 1
-print(count)
+    x_train.append(line)
+    count += 1
+    print(count)
 
 ## get all of the test reviews
 test_directory = '/projects/training/bayw/NLP/aclImdb/test/'
@@ -107,7 +107,7 @@ with io.open('preprocessed_data/imdb_train.txt','w',encoding='utf-8') as f:
     for tokens in x_train_token_ids:
         for token in tokens:
             f.write("%i " % token)
-    f.write("\n")
+        f.write("\n")
 
 ## save test data to single text file
 with io.open('preprocessed_data/imdb_test.txt','w',encoding='utf-8') as f:
@@ -118,7 +118,7 @@ with io.open('preprocessed_data/imdb_test.txt','w',encoding='utf-8') as f:
 
 glove_filename = '/projects/training/bayw/NLP/glove.840B.300d.txt'
 with io.open(glove_filename,'r',encoding='utf-8') as f:
-        lines = f.readlines()
+    lines = f.readlines()
 
 glove_dictionary = []
 glove_embeddings = []
