@@ -33,6 +33,15 @@ MANIFEST
 *.manifest
 *.spec
 
+# Error and out reports
+*.err
+*.out
+*.OU
+*.ER
+
+# pycache files
+*.pyc
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt

@@ -31,6 +31,8 @@ x_train = x_train[0:25000]
 y_train = np.zeros((25000,))
 y_train[0:12500] = 1
 
+print('size of both x_train and y_train:',len(x_train),len(y_train))
+
 x_test = []
 with io.open('../preprocessed_data/imdb_test.txt','r',encoding='utf-8') as f:
     lines = f.readlines()
@@ -86,11 +88,13 @@ for epoch in range(no_of_epochs):
     epoch_counter = 0
 
     time1 = time.time()
-    
+
     I_permutation = np.random.permutation(L_Y_train)
 
     for i in range(0, L_Y_train, batch_size):
-
+        print('permutation size:',len(I_permutation))
+        print('x_train size:',len(x_train))
+        print('index',i,L_Y_train,batch_size)
         x_input = [x_train[j] for j in I_permutation[i:i+batch_size]]
         y_input = np.asarray([y_train[j] for j in I_permutation[i:i+batch_size]],dtype=np.int)
         target = Variable(torch.FloatTensor(y_input)).cuda()
@@ -100,7 +104,7 @@ for epoch in range(no_of_epochs):
         loss.backward()
 
         optimizer.step()   # update weights
-        
+
         prediction = pred >= 0.0
         truth = target >= 0.5
         acc = prediction.eq(truth).sum().cpu().data.numpy()
@@ -125,7 +129,7 @@ for epoch in range(no_of_epochs):
     epoch_counter = 0
 
     time1 = time.time()
-    
+
     I_permutation = np.random.permutation(L_Y_test)
 
     for i in range(0, L_Y_test, batch_size):
@@ -136,7 +140,7 @@ for epoch in range(no_of_epochs):
 
         with torch.no_grad():
             loss, pred = model(x_input,target)
-        
+
         prediction = pred >= 0.0
         truth = target >= 0.5
         acc = prediction.eq(truth).sum().cpu().data.numpy()
