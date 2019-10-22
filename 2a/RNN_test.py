@@ -11,30 +11,8 @@ import os
 import sys
 import io
 
-glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
-vocab_size = 100000
-
-x_train = []
-with io.open('../preprocessed_data/imdb_train_glove.txt','r',encoding='utf-8') as f:
-    lines = f.readlines()
-for line in lines:
-    line = line.strip()
-    line = line.split(' ')
-    line = np.asarray(line,dtype=np.int)
-
-    line[line>vocab_size] = 0
-    line = line[line!=0]
-
-    line = np.mean(glove_embeddings[line],axis=0)
-
-    x_train.append(line)
-x_train = np.asarray(x_train)
-x_train = x_train[0:25000]
-y_train = np.zeros((25000,))
-y_train[0:12500] = 1
-
 x_test = []
-with io.open('../preprocessed_data/imdb_test_glove.txt','r',encoding='utf-8') as f:
+with io.open('../preprocessed_data/imdb_test.txt','r',encoding='utf-8') as f:
     lines = f.readlines()
 for line in lines:
     line = line.strip()
@@ -42,12 +20,8 @@ for line in lines:
     line = np.asarray(line,dtype=np.int)
 
     line[line>vocab_size] = 0
-    line = line[line!=0]
-
-    line = np.mean(glove_embeddings[line],axis=0)
 
     x_test.append(line)
-x_test = np.asarray(x_test)
 y_test = np.zeros((25000,))
 y_test[0:12500] = 1
 
@@ -66,21 +40,21 @@ if(opt=='adam'):
 elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
-batch_size = 200
-no_of_epochs = 20
-L_Y_train = len(y_train)
+batch_size = 100
+no_of_epochs = 10
+L_Y_test = len(y_test)
 L_Y_test = len(y_test)
 
-model.train()
+model.test()
 
-train_loss = []
-train_accu = []
+test_loss = []
+test_accu = []
 test_accu = []
 
 for epoch in range(no_of_epochs):
 
-    # training
-    model.train()
+    # testing
+    model.test()
 
     epoch_acc = 0.0
     epoch_loss = 0.0
@@ -89,11 +63,10 @@ for epoch in range(no_of_epochs):
 
     time1 = time.time()
 
-    I_permutation = np.random.permutation(L_Y_train)
+    I_permutation = np.random.permutation(L_Y_test)
 
-    for i in range(0, L_Y_train, batch_size):
-        ## testing code copied from training
-        x_input2 = [x_train[j] for j in I_permutation[i:i+batch_size]]
+    for i in range(0, L_Y_test, batch_size):
+        x_input2 = [x_test[j] for j in I_permutation[i:i+batch_size]]
         sequence_length = (epoch+1)*50
         x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
         for j in range(batch_size):
@@ -104,15 +77,14 @@ for epoch in range(no_of_epochs):
             else:
                 start_index = np.random.randint(sl-sequence_length+1)
                 x_input[j,:] = x[start_index:(start_index+sequence_length)]
-        y_input = y_train[I_permutation[i:i+batch_size]]
+        y_input = y_test[I_permutation[i:i+batch_size]]
 
         data = Variable(torch.LongTensor(x_input)).cuda()
         target = Variable(torch.FloatTensor(y_input)).cuda()
 
         optimizer.zero_grad()
-        loss, pred = model(data,target,train=True)
+        loss, pred = model(data,target,test=True)
         loss.backward()
-
 
         optimizer.step()   # update weights
 
@@ -126,11 +98,13 @@ for epoch in range(no_of_epochs):
     epoch_acc /= epoch_counter
     epoch_loss /= (epoch_counter/batch_size)
 
-    train_loss.append(epoch_loss)
-    train_accu.append(epoch_acc)
+    test_loss.append(epoch_loss)
+    test_accu.append(epoch_acc)
 
-    print(epoch, "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
+    print(sequence length,epoch, "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
 
-data = [train_loss,train_accu,test_accu]
+
+torch.save(model,'rnn.model')
+data = [test_loss,test_accu,test_accu]
 data = np.asarray(data)
-np.save('test.npy',data)
+np.save('data.npy',data)

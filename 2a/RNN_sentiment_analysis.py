@@ -12,7 +12,6 @@ import sys
 import io
 
 from RNN_model import RNN_model
-glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
 vocab_size = 8000
 
 x_train = []
@@ -32,17 +31,6 @@ y_train[0:12500] = 1
 
 print('size of both x_train and y_train:',len(x_train),len(y_train))
 
-x_test = []
-with io.open('../preprocessed_data/imdb_test.txt','r',encoding='utf-8') as f:
-    lines = f.readlines()
-for line in lines:
-    line = line.strip()
-    line = line.split(' ')
-    line = np.asarray(line,dtype=np.int)
-
-    line[line>vocab_size] = 0
-
-    x_test.append(line)
 y_test = np.zeros((25000,))
 y_test[0:12500] = 1
 
