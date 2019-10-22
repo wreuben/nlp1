@@ -12,10 +12,9 @@ import sys
 import io
 
 from RNN_model import RNN_model
-vocab_size = 8000
 
 glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
-vocab_size = 100000
+vocab_size = 500
 
 x_train = []
 with io.open('../preprocessed_data/imdb_train_glove.txt','r',encoding='utf-8') as f:
@@ -48,7 +47,7 @@ y_test[0:12500] = 1
 
 vocab_size += 1
 
-model = RNN_model(500)
+model = RNN_model(300)
 model.cuda()
 
 # opt = 'sgd'
@@ -60,7 +59,7 @@ if(opt=='adam'):
 elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
-batch_size = 100
+batch_size = 200
 no_of_epochs = 20
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
@@ -153,7 +152,7 @@ for epoch in range(no_of_epochs):
             y_input = y_train[I_permutation[i:i+batch_size]]
 
             data = Variable(torch.FloatTensor(x_input)).cuda()
-            target = Variable(torch.FloatTensor(y_input))
+            target = Variable(torch.FloatTensor(y_input)).cuda()
 
             with torch.no_grad():
                 loss, pred = model(data,target)

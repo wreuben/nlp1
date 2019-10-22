@@ -12,7 +12,7 @@ import sys
 import io
 
 from RNN_model import RNN_model
-vocab_size = 8000
+vocab_size = 100000
 
 x_train = []
 with io.open('../preprocessed_data/imdb_train.txt','r',encoding='utf-8') as f:
@@ -31,8 +31,20 @@ y_train[0:12500] = 1
 
 print('size of both x_train and y_train:',len(x_train),len(y_train))
 
+x_test = []
+with io.open('../preprocessed_data/imdb_test.txt','r',encoding='utf-8') as f:
+    lines = f.readlines()
+for line in lines:
+    line = line.strip()
+    line = line.split(' ')
+    line = np.asarray(line,dtype=np.int)
+
+    line[line>vocab_size] = 0
+
+    x_test.append(line)
 y_test = np.zeros((25000,))
 y_test[0:12500] = 1
+
 
 vocab_size += 1
 
@@ -48,8 +60,8 @@ if(opt=='adam'):
 elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
-batch_size = 100
-no_of_epochs = 20
+batch_size = 200
+no_of_epochs = 40
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
 
@@ -75,7 +87,7 @@ for epoch in range(no_of_epochs):
 
     for i in range(0, L_Y_train, batch_size):
         x_input2 = [x_train[j] for j in I_permutation[i:i+batch_size]]
-        sequence_length = 100
+        sequence_length = 50
         x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
         for j in range(batch_size):
             x = np.asarray(x_input2[j])
@@ -154,7 +166,6 @@ for epoch in range(no_of_epochs):
         epoch_acc /= epoch_counter
         epoch_loss /= (epoch_counter/batch_size)
 
-        test_loss.append(epoch_loss)
         test_accu.append(epoch_acc)
 
         print(sequence_length,epoch, "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
