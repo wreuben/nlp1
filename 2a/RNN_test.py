@@ -11,6 +11,8 @@ import os
 import sys
 import io
 
+vocab_size = 8000
+
 x_test = []
 with io.open('../preprocessed_data/imdb_test.txt','r',encoding='utf-8') as f:
     lines = f.readlines()
@@ -45,7 +47,7 @@ no_of_epochs = 10
 L_Y_test = len(y_test)
 L_Y_test = len(y_test)
 
-model.test()
+model.eval()
 
 test_loss = []
 test_accu = []
@@ -54,7 +56,7 @@ test_accu = []
 for epoch in range(no_of_epochs):
 
     # testing
-    model.test()
+    model.eval()
 
     epoch_acc = 0.0
     epoch_loss = 0.0
@@ -82,11 +84,8 @@ for epoch in range(no_of_epochs):
         data = Variable(torch.LongTensor(x_input)).cuda()
         target = Variable(torch.FloatTensor(y_input)).cuda()
 
-        optimizer.zero_grad()
-        loss, pred = model(data,target,test=True)
-        loss.backward()
-
-        optimizer.step()   # update weights
+        with torch.no_grad():
+            loss, pred = model(data,target)
 
         prediction = pred >= 0.0
         truth = target >= 0.5
@@ -101,10 +100,4 @@ for epoch in range(no_of_epochs):
     test_loss.append(epoch_loss)
     test_accu.append(epoch_acc)
 
-    print(sequence length,epoch, "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
-
-
-torch.save(model,'rnn.model')
-data = [test_loss,test_accu,test_accu]
-data = np.asarray(data)
-np.save('data.npy',data)
+    print(sequence_length,epoch, "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
