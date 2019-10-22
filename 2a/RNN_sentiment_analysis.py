@@ -61,7 +61,7 @@ elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
 batch_size = 200
-no_of_epochs = 40
+no_of_epochs = 27
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
 
@@ -70,6 +70,7 @@ model.train()
 train_loss = []
 train_accu = []
 test_accu = []
+sequence_length = 50
 
 for epoch in range(no_of_epochs):
 
@@ -87,7 +88,6 @@ for epoch in range(no_of_epochs):
 
     for i in range(0, L_Y_train, batch_size):
         x_input2 = [x_train[j] for j in I_permutation[i:i+batch_size]]
-        sequence_length = 50
         x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
         for j in range(batch_size):
             x = np.asarray(x_input2[j])
@@ -138,7 +138,6 @@ for epoch in range(no_of_epochs):
 
         for i in range(0, L_Y_test, batch_size):
             x_input2 = [x_test[j] for j in I_permutation[i:i+batch_size]]
-            sequence_length = (epoch+1)*50
             x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
             for j in range(batch_size):
                 x = np.asarray(x_input2[j])

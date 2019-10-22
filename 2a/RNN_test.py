@@ -68,8 +68,8 @@ for epoch in range(no_of_epochs):
     I_permutation = np.random.permutation(L_Y_test)
 
     for i in range(0, L_Y_test, batch_size):
-        x_input2 = [x_test[j] for j in I_permutation[i:i+batch_size]]
         sequence_length = (epoch+1)*50
+        x_input2 = [x_test[j] for j in I_permutation[i:i+batch_size]]
         x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
         for j in range(batch_size):
             x = np.asarray(x_input2[j])

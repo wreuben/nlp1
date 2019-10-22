@@ -12,6 +12,7 @@ import sys
 import io
 
 vocab_size = 8000
+glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
 
 x_test = []
 with io.open('../preprocessed_data/imdb_test_glove.txt','r',encoding='utf-8') as f:
@@ -82,7 +83,7 @@ for epoch in range(no_of_epochs):
         x_input = glove_embeddings[x_input]
         y_input = y_test[I_permutation[i:i+batch_size]]
 
-        data = Variable(torch.LongTensor(x_input)).cuda()
+        data = Variable(torch.FloatTensor(x_input)).cuda()
         target = Variable(torch.FloatTensor(y_input)).cuda()
 
         with torch.no_grad():

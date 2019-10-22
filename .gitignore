@@ -38,6 +38,7 @@ MANIFEST
 *.out
 *.OU
 *.ER
+*.model
 
 # pycache files
 *.pyc
