@@ -14,7 +14,7 @@ import io
 from BOW_model import BOW_model
 
 glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
-vocab_size = 100000
+vocab_size = 500
 
 x_train = []
 with io.open('../preprocessed_data/imdb_train_glove.txt','r',encoding='utf-8') as f:
@@ -45,7 +45,7 @@ for line in lines:
 
     line[line>vocab_size] = 0
     line = line[line!=0]
-    
+
     line = np.mean(glove_embeddings[line],axis=0)
 
     x_test.append(line)
@@ -59,17 +59,17 @@ model = BOW_model(500) # try 300 as well
 
 model.cuda()
 
-# opt = 'sgd'
-# LR = 0.01
-opt = 'adam'
-LR = 0.001
+opt = 'sgd'
+LR = 0.01
+# opt = 'adam'
+# LR = 0.001
 if(opt=='adam'):
     optimizer = optim.Adam(model.parameters(), lr=LR)
 elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
-batch_size = 200
-no_of_epochs = 6
+batch_size = 100
+no_of_epochs = 20
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
 
@@ -90,7 +90,7 @@ for epoch in range(no_of_epochs):
     epoch_counter = 0
 
     time1 = time.time()
-    
+
     I_permutation = np.random.permutation(L_Y_train)
 
     for i in range(0, L_Y_train, batch_size):
@@ -107,7 +107,7 @@ for epoch in range(no_of_epochs):
         loss.backward()
 
         optimizer.step()   # update weights
-        
+
         prediction = pred >= 0.0
         truth = target >= 0.5
         acc = prediction.eq(truth).sum().cpu().data.numpy()
@@ -132,7 +132,7 @@ for epoch in range(no_of_epochs):
     epoch_counter = 0
 
     time1 = time.time()
-    
+
     I_permutation = np.random.permutation(L_Y_test)
 
     for i in range(0, L_Y_test, batch_size):
@@ -141,10 +141,10 @@ for epoch in range(no_of_epochs):
         y_input = y_train[I_permutation[i:i+batch_size]]
         data = Variable(torch.FloatTensor(x_input)).cuda()
         target = Variable(torch.FloatTensor(y_input)).cuda()
-        
+
         with torch.no_grad():
             loss, pred = model(data,target)
-        
+
         prediction = pred >= 0.0
         truth = target >= 0.5
         acc = prediction.eq(truth).sum().cpu().data.numpy()

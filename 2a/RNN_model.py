@@ -3,10 +3,10 @@
 class StatefulLSTM(nn.Module):
     def __init__(self,in_size,out_size):
         super(StatefulLSTM,self).__init__()
-        
+
         self.lstm = nn.LSTMCell(in_size,out_size)
         self.out_size = out_size
-        
+
         self.h = None
         self.c = None
 

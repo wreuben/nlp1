@@ -11,8 +11,7 @@ import os
 import sys
 import io
 
-from BOW_model import BOW_model
-
+from RNN_model import RNN_model
 glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
 vocab_size = 100000
 
@@ -45,7 +44,7 @@ for line in lines:
 
     line[line>vocab_size] = 0
     line = line[line!=0]
-    
+
     line = np.mean(glove_embeddings[line],axis=0)
 
     x_test.append(line)
@@ -55,7 +54,7 @@ y_test[0:12500] = 1
 
 vocab_size += 1
 
-model = BOW_model(500) # try 300 as well
+model = RNN_model(500) # try 300 as well
 
 model.cuda()
 
@@ -90,7 +89,7 @@ for epoch in range(no_of_epochs):
     epoch_counter = 0
 
     time1 = time.time()
-    
+
     I_permutation = np.random.permutation(L_Y_train)
 
     for i in range(0, L_Y_train, batch_size):
@@ -117,7 +116,7 @@ for epoch in range(no_of_epochs):
 
 
         optimizer.step()   # update weights
-        
+
         prediction = pred >= 0.0
         truth = target >= 0.5
         acc = prediction.eq(truth).sum().cpu().data.numpy()

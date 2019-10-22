@@ -13,8 +13,9 @@ import io
 
 from BOW_model import BOW_model
 
+# part 1a
 #imdb_dictionary = np.load('../preprocessed_data/imdb_dictionary.npy')
-vocab_size = 8000
+vocab_size = 20000
 
 x_train = []
 with io.open('../preprocessed_data/imdb_train.txt','r',encoding='utf-8') as f:
@@ -67,7 +68,7 @@ elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
 batch_size = 200
-no_of_epochs = 6
+no_of_epochs = 20
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
 
@@ -92,9 +93,6 @@ for epoch in range(no_of_epochs):
     I_permutation = np.random.permutation(L_Y_train)
 
     for i in range(0, L_Y_train, batch_size):
-        print('permutation size:',len(I_permutation))
-        print('x_train size:',len(x_train))
-        print('index',i,L_Y_train,batch_size)
         x_input = [x_train[j] for j in I_permutation[i:i+batch_size]]
         y_input = np.asarray([y_train[j] for j in I_permutation[i:i+batch_size]],dtype=np.int)
         target = Variable(torch.FloatTensor(y_input)).cuda()

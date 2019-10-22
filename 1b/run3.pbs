@@ -1,12 +1,12 @@
 #!/bin/bash
 #PBS -l nodes=01:ppn=16:xk
 #PBS -l walltime=00:45:00
-#PBS -N nlp1
+#PBS -N nlp1b
 #PBS -e nlp1.err
 #PBS -o nlp1.out
 #PBS -m bea
 #PBS -M rbwong2@illinois.edu
- cd /u/training/tra260/nlp1/1a
+ cd /u/training/tra260/nlp1/1b
  . /opt/modules/default/init/bash # NEEDED to add module commands to shell
  module load python/2.0.1
 #module load cudatoolkit

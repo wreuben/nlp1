@@ -19,14 +19,14 @@ class BOW_model(nn.Module):
         self.bn_hidden1 = nn.BatchNorm1d(no_of_hidden_units)
         self.dropout1 = torch.nn.Dropout(p=0.5)
 
-        # self.fc_hidden2 = nn.Linear(no_of_hidden_units,no_of_hidden_units)
-        # self.bn_hidden2 = nn.BatchNorm1d(no_of_hidden_units)
-        # self.dropout2 = torch.nn.Dropout(p=0.5)
+        self.fc_hidden2 = nn.Linear(no_of_hidden_units,no_of_hidden_units)
+        self.bn_hidden2 = nn.BatchNorm1d(no_of_hidden_units)
+        self.dropout2 = torch.nn.Dropout(p=0.5)
 
         self.fc_output = nn.Linear(no_of_hidden_units, 1)
 
         self.loss = nn.BCEWithLogitsLoss()
-        
+
     def forward(self, x, t):
 
         h = self.dropout1(F.relu(self.bn_hidden1(self.fc_hidden1(x))))
