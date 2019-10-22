@@ -15,6 +15,8 @@ from RNN_model import RNN_model
 glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
 vocab_size = 100000
 
+
+
 x_train = []
 with io.open('../preprocessed_data/imdb_train_glove.txt','r',encoding='utf-8') as f:
     lines = f.readlines()
@@ -67,7 +69,7 @@ if(opt=='adam'):
 elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
-batch_size = 200
+batch_size = 100
 no_of_epochs = 20
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
@@ -93,7 +95,6 @@ for epoch in range(no_of_epochs):
     I_permutation = np.random.permutation(L_Y_train)
 
     for i in range(0, L_Y_train, batch_size):
-        ## within the training loop
         x_input2 = [x_train[j] for j in I_permutation[i:i+batch_size]]
         sequence_length = 100
         x_input = np.zeros((batch_size,sequence_length),dtype=np.int)
@@ -113,7 +114,6 @@ for epoch in range(no_of_epochs):
         optimizer.zero_grad()
         loss, pred = model(data,target,train=True)
         loss.backward()
-
 
         optimizer.step()   # update weights
 
