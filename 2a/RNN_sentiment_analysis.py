@@ -13,9 +13,7 @@ import io
 
 from RNN_model import RNN_model
 glove_embeddings = np.load('../preprocessed_data/glove_embeddings.npy')
-vocab_size = 100000
-
-
+vocab_size = 8000
 
 x_train = []
 with io.open('../preprocessed_data/imdb_train_glove.txt','r',encoding='utf-8') as f:
@@ -57,7 +55,6 @@ y_test[0:12500] = 1
 vocab_size += 1
 
 model = RNN_model(vocab_size,500) # try 300 as well
-
 model.cuda()
 
 # opt = 'sgd'
