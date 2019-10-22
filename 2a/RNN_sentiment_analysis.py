@@ -54,7 +54,7 @@ y_test[0:12500] = 1
 
 vocab_size += 1
 
-model = RNN_model(500) # try 300 as well
+model = RNN_model(vocab_size,500) # try 300 as well
 
 model.cuda()
 
