@@ -26,8 +26,6 @@ for line in lines:
 
     x_train.append(line)
 
-print('size of both x_train and y_train:',len(x_train),len(y_train))
-
 x_test = []
 with io.open('../preprocessed_data/imdb_test.txt','r',encoding='utf-8') as f:
     lines = f.readlines()
@@ -54,8 +52,7 @@ if(opt=='adam'):
 elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
-batch_size = 200
-no_of_epochs = 27
+batch_size = 20
 
 model.train()
 
@@ -79,7 +76,7 @@ for epoch in range(0,75):
     epoch_counter = 0
 
     time1 = time.time()
-    
+
     I_permutation = np.random.permutation(len(x_train))
 
     for i in range(0, len(x_train), batch_size):
@@ -104,14 +101,14 @@ for epoch in range(0,75):
         norm = nn.utils.clip_grad_norm_(model.parameters(),2.0)
 
         optimizer.step()   # update gradients
-        
+
         values,prediction = torch.max(pred,1)
         prediction = prediction.cpu().data.numpy()
         accuracy = float(np.sum(prediction==x_input.cpu().data.numpy()[:,1:]))/sequence_length
         epoch_acc += accuracy
         epoch_loss += loss.data.item()
         epoch_counter += batch_size
-        
+
         if (i+batch_size) % 1000 == 0 and epoch==0:
            print(i+batch_size, accuracy/batch_size, loss.data.item(), norm, "%.4f" % float(time.time()-time1))
     epoch_acc /= epoch_counter
@@ -132,7 +129,7 @@ for epoch in range(0,75):
         epoch_counter = 0
 
         time1 = time.time()
-       
+
 
         I_permutation = np.random.permutation(len(x_test))
 
@@ -152,7 +149,7 @@ for epoch in range(0,75):
 
             with torch.no_grad():
                 pred = model(x_input,train=False)
-            
+
             values,prediction = torch.max(pred,1)
             prediction = prediction.cpu().data.numpy()
             accuracy = float(np.sum(prediction==x_input.cpu().data.numpy()[:,1:]))/sequence_length
