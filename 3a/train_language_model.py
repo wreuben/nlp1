@@ -95,7 +95,7 @@ for epoch in range(0,75):
         optimizer.zero_grad()
         loss, pred = model(x_input)
         loss.backward()
-        if(EPOCH>6):
+        if(epoch>6):
             for group in optimizer.param_groups:
                 for p in group['params']:
                     state = optimizer.state[p]
@@ -122,7 +122,7 @@ for epoch in range(0,75):
     train_loss.append(epoch_loss)
     train_accu.append(epoch_acc)
 
-    print(epoch, "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
+    print("Epoch number",epoch, "%.2f" % (epoch_acc*100.0), "%.4f" % epoch_loss, "%.4f" % float(time.time()-time1))
 
     ## test
     if((epoch+1)%1==0):
