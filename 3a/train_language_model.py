@@ -12,7 +12,7 @@ import sys
 import io
 
 from RNN_language_model import RNN_language_model
-vocab_size = 100000
+vocab_size = 8000
 
 x_train = []
 with io.open('../preprocessed_data/imdb_train.txt','r',encoding='utf-8') as f:
@@ -43,16 +43,14 @@ vocab_size += 1
 model = RNN_language_model(vocab_size,500) # try 300 as well
 model.cuda()
 
-opt = 'sgd'
-LR = 0.01
-# opt = 'adam'
-# LR = 0.001
+opt = 'adam'
+LR = 0.001
 if(opt=='adam'):
     optimizer = optim.Adam(model.parameters(), lr=LR)
 elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
-batch_size = 20
+batch_size = 200
 
 model.train()
 
@@ -97,6 +95,13 @@ for epoch in range(0,75):
         optimizer.zero_grad()
         loss, pred = model(x_input)
         loss.backward()
+	    if(EPOCH>6):
+        for group in optimizer.param_groups:
+            for p in group['params']:
+                state = optimizer.state[p]
+                if 'step' in state.keys():
+                    if(state['step']>=1024):
+                        state['step'] = 1000
 
         norm = nn.utils.clip_grad_norm_(model.parameters(),2.0)
 
@@ -177,7 +182,6 @@ for epoch in range(0,75):
         data = np.asarray(data)
         np.save('data.npy',data)
 torch.save(model,'language.model')
-torch.save(model,'rnn.model')
 data = [train_loss,train_accu,test_accu]
 data = np.asarray(data)
 np.save('data.npy',data)
