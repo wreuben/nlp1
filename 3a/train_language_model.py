@@ -95,7 +95,7 @@ for epoch in range(0,75):
         optimizer.zero_grad()
         loss, pred = model(x_input)
         loss.backward()
-	    if(EPOCH>6):
+        if(EPOCH>6):
             for group in optimizer.param_groups:
                 for p in group['params']:
                     state = optimizer.state[p]
