@@ -33,12 +33,14 @@ MANIFEST
 *.manifest
 *.spec
 
-# Error and out reports
+# Error and out reports and all data
 *.err
 *.out
 *.OU
 *.ER
 *.model
+*.npy
+*.state
 
 # pycache files
 *.pyc

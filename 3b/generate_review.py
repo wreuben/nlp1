@@ -34,14 +34,15 @@ model.eval()
 tokens = [['a'],['i']]
 text1 = 'This movie makes me feel'.split()
 text2 =  'After watching this I felt'.split()
-text3 = 'The best part of the'.split()
-tokens2 = [text1,text2,text3]
+tokens2 = [text1,text2]
 
 text5 = 'I rewatched this movie'.split()
 text6 =  'I stopped watching after'.split()
 text7 = 'I kept watching this'.split()
 text8 = 'I could not finish'.split()
 tokens3 = [text5,text6,text7,text8]
+
+token = tokens2
 
 token_ids = np.asarray([[word_to_id.get(token,-1)+1 for token in x] for x in tokens])
 
@@ -79,7 +80,7 @@ outputs = outputs.permute(1,2,0)
 output = outputs[:,:,-1]
 
 #Temperature parameter adjusts confidence of model and is the probability of the words
-temperature = 1.0 # float(sys.argv[1])
+temperature = 0.2 # float(sys.argv[1])
 length_of_review = 150
 
 review = []
@@ -97,7 +98,7 @@ for j in range(length_of_review):
     ## predict the next word
     embed = model.embedding(x)
 
-    h = model.lstm1(embed)
+    h = model.lstm1(embed[:,0,:])
     h = model.bn_lstm1(h)
     h = model.dropout1(h,dropout=0.3,train=False)
 
@@ -110,7 +111,7 @@ for j in range(length_of_review):
     h = model.dropout3(h,dropout=0.3,train=False)
 
     output = model.decoder(h)
-    
+
 review = np.asarray(review)
 review = review.T
 review = np.concatenate((token_ids,review),axis=1)
