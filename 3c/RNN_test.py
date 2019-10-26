@@ -11,6 +11,9 @@ import os
 import sys
 import io
 
+from RNN_language_model import RNN_language_model
+from RNN_model import RNN_model
+
 vocab_size = 8000
 
 x_test = []
@@ -43,7 +46,7 @@ elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
 batch_size = 100
-no_of_epochs = 10
+no_of_epochs = 15
 L_Y_test = len(y_test)
 L_Y_test = len(y_test)
 

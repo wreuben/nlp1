@@ -11,8 +11,9 @@ import os
 import sys
 import io
 
+from RNN_language_model import RNN_language_model
 from RNN_model import RNN_model
-vocab_size = 100000
+vocab_size = 8000
 
 x_train = []
 with io.open('../preprocessed_data/imdb_train.txt','r',encoding='utf-8') as f:
@@ -78,8 +79,8 @@ for param in model.bn_lstm3.parameters():
 for param in model.fc_output.parameters():
     params.append(param)
 
-# opt = 'sgd'
-# LR = 0.01
+#opt = 'sgd'
+#LR = 0.01
 opt = 'adam'
 LR = 0.001
 if(opt=='adam'):
@@ -88,7 +89,7 @@ elif(opt=='sgd'):
     optimizer = optim.SGD(model.parameters(), lr=LR, momentum=0.9)
 
 batch_size = 200
-no_of_epochs = 27
+no_of_epochs = 20
 L_Y_train = len(y_train)
 L_Y_test = len(y_test)
 
