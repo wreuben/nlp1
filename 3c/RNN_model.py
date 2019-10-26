@@ -67,7 +67,7 @@ class RNN_model(nn.Module):
         self.bn_lstm2= nn.BatchNorm1d(no_of_hidden_units)
         self.dropout2 = LockedDropout() #torch.nn.Dropout(p=0.5)
 
-		self.lstm3 = StatefulLSTM(no_of_hidden_units,no_of_hidden_units)
+        self.lstm3 = StatefulLSTM(no_of_hidden_units,no_of_hidden_units)
         self.bn_lstm3= nn.BatchNorm1d(no_of_hidden_units)
         self.dropout3 = LockedDropout() #torch.nn.Dropout(p=0.5)
 
@@ -81,7 +81,7 @@ class RNN_model(nn.Module):
         self.dropout1.reset_state()
         self.lstm2.reset_state()
         self.dropout2.reset_state()
-		self.lstm3.reset_state()
+        self.lstm3.reset_state()
         self.dropout3.reset_state()
 
     def forward(self, x, t, train=True):
@@ -103,7 +103,7 @@ class RNN_model(nn.Module):
             h = self.bn_lstm2(h)
             h = self.dropout2(h,dropout=0.3,train=train)
 
-			h = self.lstm3(h)
+            h = self.lstm3(h)
             h = self.bn_lstm3(h)
             h = self.dropout3(h,dropout=0.3,train=train)
 
